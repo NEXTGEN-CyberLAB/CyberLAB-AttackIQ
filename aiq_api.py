@@ -8,7 +8,7 @@ from requests.exceptions import HTTPError
 computer_name = os.environ['COMPUTERNAME']
 print(computer_name)
 base_url = "https://nextgen-cyberlab.attackiq.com.au/v1"
-private_token = "1934e108893ea454afefd0c7f02a65fc6251eca7"
+private_token = "Your Token"
 guid = '3a3e8922-352d-4a1d-b032-dbc5f3934897'
 CONFIG_FILE = "config.json"
 
