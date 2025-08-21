@@ -4,12 +4,14 @@ import requests
 import os
 import json
 from requests.exceptions import HTTPError
+from helper import get_machine_id, get_token
 
 computer_name = os.environ['COMPUTERNAME']
-print(computer_name)
-base_url = "https://nextgen-cyberlab.attackiq.com.au/v1"
-private_token = "Your Token"
-guid = '3a3e8922-352d-4a1d-b032-dbc5f3934897'
+
+base_url = "https://nextgen-cyberlab.attackiq.com.au/v1/"
+private_token = get_token()
+
+guid = get_machine_id()
 CONFIG_FILE = "config.json"
 
 # Load config.json
@@ -27,7 +29,7 @@ def save_config(config):
 # Create an assessment
 def create_assessment(uuid,guid):
     assessment_name = guid[:6]
-    url = f"{base_url}/assessments/project_from_template"
+    url = f"{base_url}assessments/project_from_template"
     headers = {
         "Authorization": f"Token {private_token}",
         "Content-Type": "application/json"
@@ -50,7 +52,7 @@ def create_assessment(uuid,guid):
 
 # Attach an machine to the assessment
 def add_asset(aid, guid):
-    url = f"{base_url}/assessments/{aid}/update_defaults"
+    url = f"{base_url}assessments/{aid}/update_defaults"
     headers = {
         "Authorization": f"Token {private_token}",
         "Content-Type": "application/json"
@@ -66,7 +68,7 @@ def add_asset(aid, guid):
 
 # Start the assesment
 def start_assessment(aid):
-    url = f"{base_url}/assessments/{aid}/run_all"
+    url = f"{base_url}assessments/{aid}/run_all"
 
     headers = {
         "Authorization": f"Token {private_token}",
