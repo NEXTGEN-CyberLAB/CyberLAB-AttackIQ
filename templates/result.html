@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attack Result</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .back { margin-top: 20px; display: inline-block; padding: 6px 12px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px; }
+        .back:hover { background: #5a6268; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Result for {{ attack_name }}</h1>
+    <pre>{{ result }}</pre>
+
+    <a class="back" href="{{ url_for('index') }}">Back</a>
+</body>
+</html>

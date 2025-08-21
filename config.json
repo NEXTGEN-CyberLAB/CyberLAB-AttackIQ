@@ -1,0 +1,12 @@
+{
+  "attackiq": {
+    "APT29": {
+      "template_id": "c71bc2cf-6b54-4450-bcc7-6c9cd9830c72",
+      "assessment_id": "5687bcbc-95f7-4cc9-b659-bc431c7698a3"
+    },
+    "APT40": {
+      "template_id": "edbae284-35e2-4f9a-84cd-18bc448383ea",
+      "assessment_id": "ab1a8d51-250a-4bb7-b9de-acda81d8fd21"
+    }
+  }
+}
