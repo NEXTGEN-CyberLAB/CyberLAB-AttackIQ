@@ -3,13 +3,9 @@ import platform
 import subprocess
 import os
 from aiq_api import load_config, run_local
-from helper import get_machine_id, run_installer
+from helper import get_machine_id, run_installer_windows, run_installer_linux
 
 app = Flask(__name__)
-
-# Installer path (change this to your real installer .exe or .msi)
-INSTALLER_PATH = r"C:\path\to\installer.exe"
-
 
 
 
@@ -22,20 +18,29 @@ def index():
 def status():
     machine_id = get_machine_id()
     agent_installed = bool(machine_id)
-    return render_template("status.html", machine_id=machine_id, agent_installed=agent_installed)
+    system = platform.system()
+    return render_template("status.html", machine_id=machine_id, agent_installed=agent_installed,system = system)
 
 
 # Run the installer
-@app.route("/install")
+@app.route("/install", methods=["POST"])
 def install_agent():
-    result = run_installer()
+    system = platform.system()
+    
+    if system == "Linux":
+        password = request.form.get("password")
+        if not password:
+            return "Password required."
+        result = run_installer_linux(password)
+    else:
+        result = run_installer()  # Windows EXE
+
+    # Check if agent exists now
     machine_id = get_machine_id()
     if machine_id:
-        # Redirect to attacks page if installation successful
         return redirect(url_for("attacks_page"))
     else:
-        return render_template("status.html", machine_id=None, agent_installed=False,
-                               install_result=result)
+        return render_template("status.html", machine_id=None, agent_installed=False, install_result=result)
 
 # Attack page
 @app.route("/attacks")

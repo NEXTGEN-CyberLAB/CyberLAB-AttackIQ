@@ -43,37 +43,31 @@ def get_machine_id():
         print(f"Unsupported OS: {system}")
         return None
 
-def run_installer():
+def run_installer_windows():
 
     system = platform.system()
-    if system == 'Windows':
-        if os.path.exists(INSTALLER_PATH):
-            try:
-                subprocess.Popen([INSTALLER_PATH], shell=True)
-                return True
-            except Exception as e:
-                return str(e)
-        else:
-            return "Installer not found at path"
 
-    elif system == "Linux":
-        if not os.path.exists(LINUX_TARBALL):
-            return f"Installer not found at {LINUX_TARBALL}"
-
-        extracted_dir = os.path.join(BASE_DIR, "ai_agent-linux")
-
+    if os.path.exists(INSTALLER_PATH):
         try:
-            # 1. Extract tarball
-            subprocess.run(f"tar -zxf {LINUX_TARBALL}", shell=True, check=True)
+            subprocess.Popen([INSTALLER_PATH], shell=True)
+            return True
+        except Exception as e:
+            return str(e)
+    else:
+        return "Installer not found at path"
 
-            # 2. Run installer script with passwordless sudo
-            install_script = os.path.join(extracted_dir, "x64", "ai-agent-install.sh")
-            subprocess.run(f"sudo {install_script}", shell=True, check=True)
+    
 
-            # 3. Cleanup
-            subprocess.run(f"rm -rf {extracted_dir}", shell=True, check=True)
-
-            return "Installer ran successfully (Linux tarball, passwordless)."
-
-        except subprocess.CalledProcessError as e:
-            return f"Linux installer error: {e}"
+def run_installer_linux(password):
+    try:
+        subprocess.run("tar -zxf ai_agent-linux-amd64-3.9.75.tar.gz", shell=True, check=True)
+        subprocess.run(
+            ["sudo", "-S", "./ai_agent-linux/x64/ai-agent-install.sh"],
+            input=f"{password}\n",
+            text=True,
+            check=True
+        )
+        subprocess.run("rm -rf ./ai_agent-linux", shell=True, check=True)
+        return "Linux installer ran successfully."
+    except subprocess.CalledProcessError as e:
+        return f"Linux installer error: {e}"

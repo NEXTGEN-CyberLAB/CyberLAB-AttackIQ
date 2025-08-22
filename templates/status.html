@@ -17,7 +17,7 @@
         {% endif %}
 
         <form method="POST" action="{{ url_for('install_agent') }}">
-            {% if platform.system() == 'Linux' %}
+            {% if system == 'Linux' %}
                 <label for="password">Enter your sudo password:</label>
                 <input type="password" id="password" name="password" required>
             {% endif %}
