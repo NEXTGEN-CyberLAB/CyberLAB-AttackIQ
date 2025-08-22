@@ -33,7 +33,7 @@ def install_agent():
             return "Password required."
         result = run_installer_linux(password)
     else:
-        result = run_installer()  # Windows EXE
+        result = run_installer_windows()  # Windows EXE
 
     # Check if agent exists now
     machine_id = get_machine_id()
