@@ -1,4 +1,3 @@
-import winreg
 import os
 import platform
 import subprocess
@@ -7,6 +6,9 @@ import subprocess
 INSTALLER_PATH = 'AttackIQAgent-installer-sfx.exe'
 LINUX_TARBALL =  "ai_agent-linux-amd64-3.9.75.tar.gz"
 
+if platform.system() == "Windows":
+    import winreg
+    
 def get_token():
     return os.getenv("AiqToken")
 

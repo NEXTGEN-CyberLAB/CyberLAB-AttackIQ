@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, flash
 import platform
 import subprocess
-import winreg
 import os
 from aiq_api import load_config, run_local
 from helper import get_machine_id, run_installer
