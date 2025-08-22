@@ -1,13 +1,14 @@
 import winreg
 import os
 import platform
+import subprocess
 
 # Installer path (change this to your real installer .exe or .msi)
-INSTALLER_PATH = r"C:\path\to\installer.exe"
+INSTALLER_PATH = 'AttackIQAgent-installer-sfx.exe'
 
 def get_token():
     return os.getenv("AiqToken")
-    
+
 def get_machine_id():
 
     system = platform.system()
@@ -48,3 +49,6 @@ def run_installer():
             return str(e)
     else:
         return "Installer not found at path"
+
+
+print(run_installer())        
