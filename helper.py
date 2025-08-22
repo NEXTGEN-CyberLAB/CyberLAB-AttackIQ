@@ -8,7 +8,7 @@ LINUX_TARBALL =  "ai_agent-linux-amd64-3.9.75.tar.gz"
 
 if platform.system() == "Windows":
     import winreg
-    
+
 def get_token():
     return os.getenv("AiqToken")
 
@@ -57,17 +57,23 @@ def run_installer():
             return "Installer not found at path"
 
     elif system == "Linux":
-        if os.path.exists(LINUX_TARBALL):
-            cmd = (
-                f"sudo bash -c "
-                f"\"tar -zxf {LINUX_TARBALL} "
-                f"&& ./ai_agent-linux/x64/ai-agent-install.sh "
-                f"&& rm -rf ./ai_agent-linux/\""
-            )
-            try:
-                subprocess.run(cmd, shell=True, check=True)
-                return "Installer ran successfully (Linux tarball)."
-            except subprocess.CalledProcessError as e:
-                return f"Linux installer error: {e}"
-        else:
+        if not os.path.exists(LINUX_TARBALL):
             return f"Installer not found at {LINUX_TARBALL}"
+
+        extracted_dir = os.path.join(BASE_DIR, "ai_agent-linux")
+
+        try:
+            # 1. Extract tarball
+            subprocess.run(f"tar -zxf {LINUX_TARBALL}", shell=True, check=True)
+
+            # 2. Run installer script with passwordless sudo
+            install_script = os.path.join(extracted_dir, "x64", "ai-agent-install.sh")
+            subprocess.run(f"sudo {install_script}", shell=True, check=True)
+
+            # 3. Cleanup
+            subprocess.run(f"rm -rf {extracted_dir}", shell=True, check=True)
+
+            return "Installer ran successfully (Linux tarball, passwordless)."
+
+        except subprocess.CalledProcessError as e:
+            return f"Linux installer error: {e}

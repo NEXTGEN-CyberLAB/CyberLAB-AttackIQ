@@ -6,7 +6,7 @@ import json
 from requests.exceptions import HTTPError
 from helper import get_machine_id, get_token
 
-computer_name = os.environ['COMPUTERNAME']
+
 
 base_url = "https://nextgen-cyberlab.attackiq.com.au/v1/"
 private_token = get_token()
