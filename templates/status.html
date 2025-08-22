@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Agent Status</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .ok { color: green; }
-        .missing { color: red; }
-        .btn { display: inline-block; margin-top: 10px; padding: 8px 16px;
-               background: #007BFF; color: white; text-decoration: none; border-radius: 4px; }
-        .btn:hover { background: #0056b3; }
-    </style>
+    <title>AttackIQ Agent Status</title>
 </head>
 <body>
     <h1>AttackIQ Agent Status</h1>
 
-    {% if machine_id %}
-        <p class="ok">✅ Agent installed. Machine ID: <strong>{{ machine_id }}</strong></p>
-        <a class="btn" href="{{ url_for('attacks_page') }}">Go to Attacks</a>
+    {% if agent_installed %}
+        <p style="color: green;">Agent is installed!</p>
+        <p>Machine ID: {{ machine_id }}</p>
+        <a href="{{ url_for('attacks_page') }}">Go to Attacks Page</a>
     {% else %}
-        <p class="missing">❌ Agent not detected on this machine.</p>
-        <a class="btn" href="{{ url_for('install_agent') }}">Install AttackIQ Agent</a>
+        <p style="color: red;">Agent is not installed.</p>
+        {% if install_result %}
+            <p>Installer result: {{ install_result }}</p>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('install_agent') }}">
+            {% if platform.system() == 'Linux' %}
+                <label for="password">Enter your sudo password:</label>
+                <input type="password" id="password" name="password" required>
+            {% endif %}
+            <button type="submit">Install AttackIQ Agent</button>
+        </form>
     {% endif %}
+
 </body>
 </html>

@@ -76,4 +76,4 @@ def run_installer():
             return "Installer ran successfully (Linux tarball, passwordless)."
 
         except subprocess.CalledProcessError as e:
-            return f"Linux installer error: {e}
+            return f"Linux installer error: {e}"

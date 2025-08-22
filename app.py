@@ -21,14 +21,21 @@ def index():
 @app.route("/status")
 def status():
     machine_id = get_machine_id()
-    return render_template("status.html", machine_id=machine_id)
+    agent_installed = bool(machine_id)
+    return render_template("status.html", machine_id=machine_id, agent_installed=agent_installed)
 
 
 # Run the installer
 @app.route("/install")
 def install_agent():
     result = run_installer()
-    return f"Installer launched: {result}"
+    machine_id = get_machine_id()
+    if machine_id:
+        # Redirect to attacks page if installation successful
+        return redirect(url_for("attacks_page"))
+    else:
+        return render_template("status.html", machine_id=None, agent_installed=False,
+                               install_result=result)
 
 # Attack page
 @app.route("/attacks")
