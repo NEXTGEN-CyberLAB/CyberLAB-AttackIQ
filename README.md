@@ -23,14 +23,14 @@ pip install flask requests
 2. Inside the Startup folder, create a new shortcut:  
    - **Target**:
      ```
-     <path-to-project>\venv\Scripts\pythonw.exe "<path-to-project>\app.py"
+     C:\Users\<your-username>\AppData\Local\Programs\Python\Launcher\pyw.exe "<path-to-project>\app.py"
      ```
    - **Start in**:
      ```
      <path-to-project>
      ```
 
-   ✅ Use `pythonw.exe` instead of `python.exe` to hide the console window.
+   ✅ Use `pythonw.exe` or `pyw.exe` instead of `python.exe` to hide the console window.
 
 ### 2. Environment
 - Ensure `AiqToken` is set as a **System Environment Variable**, or hardcode it in your code.
@@ -55,13 +55,20 @@ Description=CyberLAB Flask App
 After=network.target
 
 [Service]
-User=<username>
-WorkingDirectory=<path-to-project>
-ExecStart=<path-to-project>/venv/bin/python app.py
-Environment="AIQ_TOKEN=<your-api-token>"
-Environment="PATH=<path-to-project>/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+User=<your-username>
+WorkingDirectory=<path-to-project>   # where the code is located
+ExecStart=<path-to-project>/venv/bin/python app.py   # full path to python in venv and app.py
+Environment="AiqToken=<your-attackiq-token>"
 Restart=always
-RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
+
+### 2. Start Service
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable cyberlab.service
+sudo systemctl start cyberlab.service
+sudo systemctl status cyberlab.service
+```
