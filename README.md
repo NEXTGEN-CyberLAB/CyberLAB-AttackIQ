@@ -17,8 +17,8 @@ pip install flask requests
 ```
 
 ## 🗂️ Config file
-The app uses a config.json file located in the project folder.
-Users must add their AttackIQ blueprint ID in this file for the attack they want to run.
+- The app uses a config.json file located in the project folder.
+- Users must add their AttackIQ blueprint ID in this file for the attack they want to run.
 
 Example `config.json`
 
