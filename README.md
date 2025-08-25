@@ -16,6 +16,26 @@ pip install flask requests
 
 ```
 
+## 🗂️ Config file
+The app uses a config.json file located in the project folder.
+Users must add their AttackIQ blueprint ID in this file for the attack they want to run.
+
+Example `config.json`
+
+```json
+{
+  "attackiq": {
+    "APT29": {
+      "template_id": "c71bc2cf-6b54-4450-bcc7-6c9cd9830c72",
+      "assessment_id": ""
+    },
+    "APT40": {
+      "template_id": "edbae284-35e2-4f9a-84cd-18bc448383ea",
+      "assessment_id": ""
+    }
+  }
+}
+```
 ## 🚀 Windows Setup
 
 ### 1. Create Shortcut
