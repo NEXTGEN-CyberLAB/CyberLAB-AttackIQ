@@ -43,7 +43,7 @@ Example `config.json`
 2. Inside the Startup folder, create a new shortcut:  
    - **Target**:
      ```
-     C:\Users\<your-username>\AppData\Local\Programs\Python\Launcher\pyw.exe "<path-to-project>\app.py"
+     C:\Users\$Env:USERNAME\AppData\Local\Programs\Python\Launcher\pyw.exe "<path-to-project>\app.py"
      ```
    - **Start in**:
      ```
