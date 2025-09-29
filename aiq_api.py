@@ -111,7 +111,7 @@ def run_local(asset_id, attack_name):
     try:
         add_asset(assessment_id, asset_id)
         result = start_assessment(assessment_id)
-        # return result
+        return result
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 403:
             print(f"Assessment {assessment_id} is invalid or deleted. Creating new assessment...")
