@@ -1,35 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AttackIQ Launcher</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .attack { margin-bottom: 10px; }
-        .btn { padding: 8px 16px; background: #007BFF; color: white; text-decoration: none; border-radius: 4px; }
-        .btn:hover { background: #0056b3; }
-        .flash { margin: 10px 0; padding: 8px; border-radius: 4px; }
-        .success { background: #d4edda; color: #155724; }
-        .error { background: #f8d7da; color: #721c24; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AttackIQ Launcher — CyberLAB</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='attackiq.css') }}">
 </head>
 <body>
-    <h1>AttackIQ Launcher</h1>
+  <div class="wrap">
+    <!-- Header with CyberLAB gradient -->
+    <header class="header">
+      <div class="header-inner">
+        <div>
+          <h1>AttackIQ Launcher</h1>
+          <p class="subtitle">Select and launch assessments defined in your <code>config.json</code>.</p>
+        </div>
+        <a class="btn" href="{{ url_for('status') }}" title="Check agent status">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4z" stroke="white" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="2" fill="white"/>
+          </svg>
+          Agent Status
+        </a>
+      </div>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="flash {{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+      <!-- Search + Clear -->
+      <div class="controls">
+        <label class="search" for="q" title="Filter attacks">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <input id="q" type="search" placeholder="Search attacks (e.g. APT29)…" oninput="filterAttacks()" />
+        </label>
+        <button class="btn" type="button" onclick="clearSearch()">Clear</button>
+      </div>
+    </header>
 
-    <div>
-        {% for name, attack in attacks.items() %}
-          <div class="attack">
-              <strong>{{ name }}</strong>
-              <a class="btn" href="{{ url_for('run_attack', attack_name=name) }}">Run</a>
-          </div>
-        {% endfor %}
+    <!-- Flask flash messages -->
+    <div class="flash-area">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
     </div>
+
+    <!-- Attacks grid -->
+    <section class="section">
+      <h2 class="section-title">Available attacks</h2>
+
+      {% if attacks %}
+        <div id="grid" class="grid">
+          {% for name, attack in attacks.items() %}
+          <article
+            class="card"
+            data-name="{{ name | lower }} {{ attack.get('template_id','') | lower }} {{ attack.get('assessment_id','') | lower }} {{ attack.get('description','') | lower }}"
+          >
+            <div class="attack-name">{{ name }}</div>
+
+            {% if attack.get('description') %}
+              <p class="desc">{{ attack['description'] | truncate(140, True, '…') }}</p>
+            {% endif %}
+
+            <div class="meta">
+              {% if attack.get('template_id') %}
+                <span class="pill" title="Template ID">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7" stroke="currentColor" stroke-width="1.5"/></svg>
+                  <small>Template:</small>
+                  <code>{{ attack['template_id'] }}</code>
+                </span>
+              {% endif %}
+              {% if attack.get('assessment_id') %}
+                <span class="pill" title="Assessment ID">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12l4 4L19 6" stroke="currentColor" stroke-width="1.5"/></svg>
+                  <small>Assessment:</small>
+                  <code>{{ attack['assessment_id'] }}</code>
+                </span>
+              {% endif %}
+            </div>
+
+            <div class="card-actions">
+              <a class="btn" href="{{ url_for('run_attack', attack_name=name) }}">Run</a>
+              <button class="ghost" type="button" onclick="copyMeta(this)">Copy IDs</button>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty card">
+          <strong>No attacks found.</strong>
+          <div style="margin-top:6px">Add items under the <code>attackiq</code> key in <code>config.json</code> and refresh.</div>
+        </div>
+      {% endif %}
+    </section>
+
+    <footer class="footer">
+      <span>CyberLAB Attack Simulator UI • Dark theme with orange ↔ purple gradients.</span>
+    </footer>
+  </div>
+
+  <script>
+    function filterAttacks() {
+      const q = document.getElementById('q').value.trim().toLowerCase();
+      const cards = document.querySelectorAll('#grid .card');
+      cards.forEach(card => {
+        const haystack = card.getAttribute('data-name');
+        card.classList.toggle('hide', !haystack.includes(q));
+      });
+    }
+    function clearSearch() {
+      const input = document.getElementById('q');
+      input.value = '';
+      filterAttacks();
+      input.focus();
+    }
+    function copyMeta(btn){
+      const card = btn.closest('.card');
+      const metaCodes = card.querySelectorAll('code');
+      const text = Array.from(metaCodes).map(c => c.textContent).join('\n');
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        toast('Copied IDs to clipboard');
+      });
+    }
+    function toast(msg){
+      const el = document.createElement('div');
+      el.className = 'flash success';
+      el.textContent = msg;
+      document.querySelector('.flash-area').appendChild(el);
+      setTimeout(() => { el.remove(); }, 2600);
+    }
+  </script>
 </body>
 </html>
