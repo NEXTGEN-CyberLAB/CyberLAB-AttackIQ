@@ -78,8 +78,8 @@ def start_assessment(aid):
 
     payload = {} 
     response = requests.post(url, headers=headers, json=payload)
-    return response.json()
-
+    return response
+    
 def run_local(asset_id, attack_name):
     config = load_config()
     attacks = config.setdefault("attackiq", {})
