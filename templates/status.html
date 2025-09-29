@@ -1,29 +1,147 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AttackIQ Agent Status</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Status — CyberLAB</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='attackiq.css') }}">
 </head>
-<body>
-    <h1>AttackIQ Agent Status</h1>
+<body class="status-page">
+  <div class="wrap">
+    <header class="header">
+      <div class="header-inner">
+        <div>
+          <h1>Agent Status</h1>
+          <p class="subtitle">Check whether the AttackIQ agent is installed and ready on this host.</p>
+        </div>
+        <!-- Goes to the actual Attacks page -->
+        <a class="btn" href="{{ url_for('attacks') }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h14M10 6l-6 6 6 6" stroke="white" stroke-width="1.5"/></svg>
+          Open Attacks
+        </a>
+      </div>
 
-    {% if agent_installed %}
-        <p style="color: green;">Agent is installed!</p>
-        <p>Machine ID: {{ machine_id }}</p>
-        <a href="{{ url_for('attacks_page') }}">Go to Attacks Page</a>
-    {% else %}
-        <p style="color: red;">Agent is not installed.</p>
-        {% if install_result %}
-            <p>Installer result: {{ install_result }}</p>
-        {% endif %}
+      <div class="toolbar">
+        <!-- Refresh -->
+        <button class="btn" type="button" onclick="location.reload()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v4l3-3M5 12a7 7 0 1012 4" stroke="white" stroke-width="1.5"/></svg>
+          Refresh
+        </button>
 
-        <form method="POST" action="{{ url_for('install_agent') }}">
-            {% if system == 'Linux' %}
-                <label for="password">Enter your sudo password:</label>
-                <input type="password" id="password" name="password" required>
-            {% endif %}
-            <button type="submit">Install AttackIQ Agent</button>
+        <!-- Install / Repair Agent (POST) -->
+        <form action="{{ url_for('status_install') }}" method="post" style="display:inline">
+          <button class="ghost" type="submit" title="Install or repair the agent">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2v8m0 0l3-3m-3 3L9 7M6 15h12M7 19h10" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            Install / Repair Agent
+          </button>
         </form>
+      </div>
+    </header>
+
+    <div class="flash-area">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    {% set has_meta = hostname or os_name or asset_id or agent_version or tenant or last_seen %}
+
+    {% if services %}
+    <!-- Two-column when services are provided -->
+    <section class="grid">
+      <article class="card">
+        <h2 class="card-title">Health</h2>
+        <div class="status-line">
+          {% if agent_installed %}
+            <span class="dot ok"></span>
+            <strong>Agent installed</strong>
+            <span style="color:var(--muted)">OK</span>
+          {% else %}
+            <span class="dot err"></span>
+            <strong>Agent missing</strong>
+            <span style="color:var(--muted)">Install required</span>
+          {% endif %}
+        </div>
+        <div style="height:10px"></div>
+
+        {% if has_meta %}
+          <div class="kv">
+            {% if hostname %}<div class="k">Hostname</div><div>{{ hostname }}</div>{% endif %}
+            {% if os_name %}<div class="k">OS</div><div>{{ os_name }}</div>{% endif %}
+            {% if asset_id %}<div class="k">Asset ID</div><div><code>{{ asset_id }}</code></div>{% endif %}
+            {% if agent_version %}<div class="k">Agent version</div><div><code>{{ agent_version }}</code></div>{% endif %}
+            {% if tenant %}<div class="k">AIQ Tenant</div><div>{{ tenant }}</div>{% endif %}
+            {% if last_seen %}<div class="k">Last seen</div><div>{{ last_seen }}</div>{% endif %}
+          </div>
+        {% else %}
+          <div style="color:var(--muted)">No host metadata provided by backend.</div>
+        {% endif %}
+      </article>
+
+      <article class="card">
+        <h2 class="card-title">Services</h2>
+        <table>
+          <thead>
+            <tr><th>Component</th><th>Status</th><th>Details</th></tr>
+          </thead>
+          <tbody>
+            {% for svc in services %}
+              <tr>
+                <td>{{ svc.name }}</td>
+                <td>
+                  {% if svc.ok %}
+                    <span style="color:var(--success-fg)">Healthy</span>
+                  {% else %}
+                    <span style="color:var(--error-fg)">Issue</span>
+                  {% endif %}
+                </td>
+                <td><code>{{ svc.detail or '' }}</code></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </article>
+    </section>
+    {% else %}
+    <!-- Full-width when no services -->
+    <section>
+      <article class="card">
+        <h2 class="card-title">Health</h2>
+        <div class="status-line">
+          {% if agent_installed %}
+            <span class="dot ok"></span>
+            <strong>Agent installed</strong>
+            <span style="color:var(--muted)">OK</span>
+          {% else %}
+            <span class="dot err"></span>
+            <strong>Agent missing</strong>
+            <span style="color:var(--muted)">Install required</span>
+          {% endif %}
+        </div>
+        <div style="height:10px"></div>
+        {% if has_meta %}
+          <div class="kv">
+            {% if hostname %}<div class="k">Hostname</div><div>{{ hostname }}</div>{% endif %}
+            {% if os_name %}<div class="k">OS</div><div>{{ os_name }}</div>{% endif %}
+            {% if asset_id %}<div class="k">Asset ID</div><div><code>{{ asset_id }}</code></div>{% endif %}
+            {% if agent_version %}<div class="k">Agent version</div><div><code>{{ agent_version }}</code></div>{% endif %}
+            {% if tenant %}<div class="k">AIQ Tenant</div><div>{{ tenant }}</div>{% endif %}
+            {% if last_seen %}<div class="k">Last seen</div><div>{{ last_seen }}</div>{% endif %}
+          </div>
+        {% else %}
+          <div style="color:var(--muted)">No host metadata provided by backend.</div>
+        {% endif %}
+      </article>
+    </section>
     {% endif %}
 
+    <footer class="footer">CyberLAB Attack Simulator • Run Automated Attacks • Powered by AttackIQ.</footer>
+  </div>
 </body>
 </html>
