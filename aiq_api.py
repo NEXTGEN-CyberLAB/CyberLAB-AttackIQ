@@ -78,7 +78,7 @@ def start_assessment(aid):
 
     payload = {} 
     response = requests.post(url, headers=headers, json=payload)
-    return response
+    return response.json()
     
 def run_local(asset_id, attack_name):
     config = load_config()
