@@ -1,6 +1,6 @@
 # CyberLAB Flask App – Setup Guide
 
-This guide explains how to run the CyberLAB Flask App automatically on **Windows** and **Linux**.  
+This guide explains how to run the CyberLAB Flask App automatically on **Windows**.  
 The app is distributed as a ready-to-run executable — **no Python installation is required**.
 
 ---
