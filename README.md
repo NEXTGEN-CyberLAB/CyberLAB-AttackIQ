@@ -8,7 +8,9 @@ The app is distributed as a ready-to-run executable — **no Python installation
 ## 📦 Requirements
 
 - Install the **AttackIQ Agent** on the machine.  
-- Set the **API token** as a system environment variable.
+- Set the **API token** as a system environment variable.  
+
+> ⚠️ If you do not have the **AttackIQ agent installer** or your **API token**, please contact the **CyberLAB staff** to obtain them.
 
 ### Set Environment Variable (one-liner)
 
