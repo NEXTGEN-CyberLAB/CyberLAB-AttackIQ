@@ -1,17 +1,34 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, flash
 import platform
 import os
+import sys
+import json
 
-# These are your existing helpers
 from aiq_api import load_config, run_local
 from helper import get_machine_id, run_installer_windows, run_installer_linux
+from runtime_config import RES_DIR, CONFIG_PATH
 
-# Explicit folders (standard Flask defaults, but we’re crystal clear)
-app = Flask(__name__, static_folder="static", template_folder="templates")
+app = Flask(
+    __name__,
+    template_folder=os.path.join(RES_DIR, "templates"),
+    static_folder=os.path.join(RES_DIR, "static"),
+)
 
-# Needed for flash() to work
 app.secret_key = os.environ.get("SECRET_KEY", "dev")
 
+def load_config():
+    cfg = {}
+    print(os.path.exists(CONFIG_PATH))
+    if os.path.exists(CONFIG_PATH):
+        try:
+            with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+        except Exception as e:
+            cfg = {}
+    cfg.setdefault("attackiq", {})
+    # prefer env for secret
+    cfg["aiq_token"] = os.environ.get("AIQ_TOKEN", cfg.get("aiq_token"))
+    return cfg
 
 # ----------------------------
 # Helpers
@@ -41,11 +58,10 @@ def host_metadata():
         return {
             "hostname": platform.node(),
             "os_name": f"{platform.system()} {platform.release()}",
-            # These depend on your environment; we don’t guess:
             "asset_id": get_machine_id() or None,
-            "agent_version": None,  # fill via your own check if you have one
-            "tenant": None,         # fill if you can fetch tenant
-            "last_seen": None,      # fill if you can fetch last heartbeat
+            "agent_version": None,  
+            "tenant": None,         
+            "last_seen": None,      
         }
     except Exception:
         return {}
@@ -101,7 +117,7 @@ def status():
         agent_version=meta.get("agent_version"),
         tenant=meta.get("tenant"),
         last_seen=meta.get("last_seen"),
-        services=services,  # or [] if you want to hide the table entirely
+        services=services,  
     )
 
 

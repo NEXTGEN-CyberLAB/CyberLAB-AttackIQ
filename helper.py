@@ -2,7 +2,6 @@ import os
 import platform
 import subprocess
 
-# Installer path (change this to your real installer .exe or .msi)
 INSTALLER_PATH = 'AttackIQAgent-installer-sfx.exe'
 LINUX_TARBALL =  "ai_agent-linux-amd64-3.9.75.tar.gz"
 

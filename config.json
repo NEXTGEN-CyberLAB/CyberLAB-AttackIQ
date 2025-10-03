@@ -2,7 +2,7 @@
   "attackiq": {
     "APT29": {
       "template_id": "c71bc2cf-6b54-4450-bcc7-6c9cd9830c72",
-      "assessment_id": "",
+      "assessment_id": "d86ae8de-c316-4892-9e89-a7cde9ff171b",
       "description": "Simulates APT29 tradecraft - credential dumping and stealthy lateral movement."
     },
     "APT40": {

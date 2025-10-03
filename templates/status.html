@@ -28,19 +28,30 @@
           Refresh
         </button>
 
-        <!-- Install / Repair Agent (POST) -->
-        <form action="{{ url_for('status_install') }}" method="post" style="display:inline">
-          <button class="ghost" type="submit" title="Install or repair the agent">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 2v8m0 0l3-3m-3 3L9 7M6 15h12M7 19h10" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-            Install / Repair Agent
-          </button>
-        </form>
+        {% set _can_install = (can_install | default(false)) %}
+        {% if not agent_installed %}
+          {% if _can_install %}
+            <!-- Install / Repair Agent (POST) -->
+            <form action="{{ url_for('status_install') }}" method="post" style="display:inline">
+              {# If you use Flask-WTF/CSRF: {{ csrf_token() }} #}
+              <button class="ghost" type="submit" title="Install or repair the agent">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 2v8m0 0l3-3m-3 3L9 7M6 15h12M7 19h10" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+                Install / Repair Agent
+              </button>
+            </form>
+          {% else %}
+            <span class="note muted" title="No installer found next to the app.">
+              Installer not available — contact your administrator.
+            </span>
+          {% endif %}
+        {% endif %}
       </div>
     </header>
 
-    <div class="flash-area">
+    <!-- Flash messages -->
+    <div class="flash-area" aria-live="polite" aria-atomic="true">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}
@@ -69,7 +80,6 @@
           {% endif %}
         </div>
         <div style="height:10px"></div>
-
         {% if has_meta %}
           <div class="kv">
             {% if hostname %}<div class="k">Hostname</div><div>{{ hostname }}</div>{% endif %}
