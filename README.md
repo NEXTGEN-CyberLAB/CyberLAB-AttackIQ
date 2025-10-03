@@ -1,97 +1,20 @@
-# CyberLAB Flask App – Auto-Start Setup
+# CyberLAB Flask App – Setup Guide
 
-This guide explains how to run the CyberLAB Flask app automatically on **Windows** and **Linux**, with consistent behavior across both systems.
+This guide explains how to run the CyberLAB Flask App automatically on **Windows**.  
+The app is distributed as a ready-to-run executable — **no Python installation is required**.
 
 ---
+
 ## 📦 Requirements
 
-### Python Version
-- Python **3.8+** (recommended 3.10 or higher)
+- Install the **AttackIQ Agent** on the machine.  
+- Set the **API token** as a system environment variable.  
 
-### Required Packages
-Install dependencies inside your virtual environment:
+> ⚠️ If you do not have the **AttackIQ agent installer** or your **API token**, please contact the **CyberLAB staff** to obtain them.
 
-```bash
-pip install flask requests
+### Set Environment Variable (one-liner)
 
-```
+Run this command in PowerShell **as Administrator** (replace `YOUR_TOKEN_HERE`):
 
-## 🗂️ Config file
-- The app uses a config.json file located in the project folder.
-- Users must add their AttackIQ blueprint ID in this file for the attack they want to run.
-
-Example `config.json`
-
-```json
-{
-  "attackiq": {
-    "APT29": {
-      "template_id": "c71bc2cf-6b54-4450-bcc7-6c9cd9830c72",
-      "assessment_id": "",
-      "description": "Simulates APT29 tradecraft - credential dumping and stealthy lateral movement."
-    },
-    "APT40": {
-      "template_id": "edbae284-35e2-4f9a-84cd-18bc44838e3a",
-      "assessment_id": "",
-      "description": "Phishing-led initial access, scheduled tasks, and exfiltration behaviors."
-    }
-  }
-}
-
-```
-## 🚀 Windows Setup
-
-### 1. Create Shortcut
-1. Press **Win + R**, type `shell:startup`, and hit Enter.  
-2. Inside the Startup folder, create a new shortcut:  
-   - **Target**:
-     ```
-     C:\Users\<current-username>\AppData\Local\Programs\Python\Launcher\pyw.exe "<path-to-project>\app.py"
-     ```
-   - **Start in**:
-     ```
-     <path-to-project>
-     ```
-
-   ✅ Use `pythonw.exe` or `pyw.exe` instead of `python.exe` to hide the console window.
-
-### 2. Environment
-- Ensure `AiqToken` is set as a **System Environment Variable**, or hardcode it in your code.
-- Relative paths (e.g., `config.json`) work if *Start in* points to your project folder.
-
-### 3. Behavior
-- The app runs automatically when the user logs in.
-- The console window is hidden.
-- Flask app behaves the same as when started manually.
-
----
-
-## 🐧 Linux Setup (systemd)
-
-### 1. Create Service File
-
-Create `/etc/systemd/system/cyberlab.service`:
-
-```ini
-[Unit]
-Description=CyberLAB Flask App
-After=network.target
-
-[Service]
-User=<your-username>
-WorkingDirectory=<path-to-project>   # where the code is located
-ExecStart=<path-to-project>/venv/bin/python app.py   # full path to python in venv and app.py
-Environment="AiqToken=<your-attackiq-token>"
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-### 2. Start Service
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable cyberlab.service
-sudo systemctl start cyberlab.service
-sudo systemctl status cyberlab.service
-```
+```powershell
+setx AiqToken "YOUR_TOKEN_HERE" /M
