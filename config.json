@@ -1,14 +1,39 @@
 {
   "attackiq": {
-    "APT29": {
+    "APT29 Attack Emulator": {
       "template_id": "c71bc2cf-6b54-4450-bcc7-6c9cd9830c72",
-      "assessment_id": "d86ae8de-c316-4892-9e89-a7cde9ff171b",
+      "assessment_id": "",
       "description": "Simulates APT29 tradecraft - credential dumping and stealthy lateral movement."
     },
-    "APT40": {
-      "template_id": "edbae284-35e2-4f9a-84cd-18bc44838e3a",
+    "Salt Typhoon - 2025-03 - SparrowDoor and ShadowPad Campaign": {
+      "template_id": "8e88f0d4-c136-451c-bb52-d71ad32bebab",
       "assessment_id": "",
-      "description": "Phishing-led initial access, scheduled tasks, and exfiltration behaviors."
+      "description": "This Assessment Template emulates a 2025 Salt Typhoon (FamousSparrow) intrusion using SparrowDoor and ShadowPad to evaluate detection and response capabilities in Windows environments."
+    },
+    "Sandworm - 2023-11 - Associated Tactics, Techniques and Procedures": {
+      "template_id": "f379d215-ce77-47d9-916a-b21875c1f718",
+      "assessment_id": "",
+      "description": "This Assessment Template emulates Sandworm (APT44/Voodoo Bear), the GRU Unit 74455-linked Russian actor, reproducing post-compromise TTPs used for long-term espionage and disruptive ICS/SCADA operations."
+    },
+    "StrelaStealer - 2024-01 - Large-Scale Email Campaign Leads to StrelaStealer Deployment": {
+      "template_id": "a36e8bcb-2772-4c9b-a944-9f1110aee80a",
+      "assessment_id": "",
+      "description": "This Assessment Template emulates a March 2024 StrelaStealer campaign: a ZIP-attached JavaScript decoded with CertUtil that drops a StrelaStealer DLL executed via RunDLL32 to collect system/app/locale/connectivity and filesystem data and exfiltrate harvested email credentials over HTTP."
+    },
+    "Sentinel One Baseline": {
+      "template_id": "e3557e5c-7448-4185-be68-b52c21002d8a",
+      "assessment_id": "",
+      "description": "This Assessment Template includes a set of scenarios designed to evaluate the effectiveness of a SentinelOne deployment on Windows assets."
+    },
+    "Netskope Health Check": {
+      "template_id": "78a65fe5-3eab-46d4-a3f9-3f79c36d3d56",
+      "assessment_id": "",
+      "description": "This Assessment Template includes a set of scenarios designed to evaluate the effectiveness of a Netskope deployment. The scenarios are organized by security control capabilities, enabling validation of detection and prevention mechanisms across different layers of the Netskope platform."
+    },
+    "Crowdstrike Falcon Baseline Tester": {
+      "template_id": "183c431d-f97d-4970-9e01-a22cd61366de",
+      "assessment_id": "",
+      "description": "This template includes scenarios that provide a basic function check of a CrowdStrike Falcon deployment for Windows assets."
     }
   }
 }
