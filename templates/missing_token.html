@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Missing API Token — CyberLAB</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='attackiq.css') }}">
+</head>
+<body class="status-page">
+  <div class="wrap">
+    <header class="header">
+      <div class="header-inner">
+        <div>
+          <h1>⚠️ Missing API Token</h1>
+          <p class="subtitle">The system variable <code>AiqToken</code> is not set or cannot be read.</p>
+        </div>
+      </div>
+    </header>
+
+    <main style="padding: 20px;">
+      <article class="card" style="max-width: 600px;">
+        <h2 class="card-title">Configuration Required</h2>
+        <p>
+          The CyberLAB Flask app requires your <strong>AttackIQ API Token</strong> 
+          to communicate with the AttackIQ platform.
+        </p>
+        <p>
+          Please contact <strong>CyberLAB staff</strong> to obtain your API token.
+        </p>
+        <p>Once you have it, open <b>PowerShell as Administrator</b> and run:</p>
+        <pre>setx AiqToken "YOUR_TOKEN_HERE" /M</pre>
+        <p>After setting the token, restart the application to continue.</p>
+        <p>
+          <a href="{{ url_for('reload_check') }}" class="btn" style="margin-top: 10px;">
+            🔄 Recheck Token
+          </a>
+        </p>
+      </article>
+
+      <footer class="footer" style="margin-top: 40px;">
+        CyberLAB Attack Simulator • Powered by AttackIQ
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

@@ -15,13 +15,23 @@
           <h1>AttackIQ Launcher</h1>
           <p class="subtitle">Select and launch assessments defined in your <code>config.json</code>.</p>
         </div>
-        <a class="btn" href="{{ url_for('status') }}" title="Check agent status">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4z" stroke="white" stroke-width="1.5"/>
-            <circle cx="12" cy="12" r="2" fill="white"/>
-          </svg>
-          Agent Status
-        </a>
+        <div class="header-actions">
+          <a class="btn" href="{{ url_for('status') }}" title="Check agent status">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3l8 4v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V7l8-4z"
+                    stroke="white" stroke-width="1.5"/>
+              <circle cx="12" cy="12" r="2" fill="white"/>
+            </svg>
+            Agent Status
+          </a>
+
+          <form action="/exit" method="post"
+                onsubmit="return confirm('Are you sure you want to exit the CyberLAB App?');">
+            <button type="submit" class="btn exit-btn">
+              📴 Exit Application
+            </button>
+          </form>
+        </div>
       </div>
 
       <!-- Search + Clear -->

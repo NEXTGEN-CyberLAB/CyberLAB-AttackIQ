@@ -23,7 +23,7 @@ CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
 BASE_URL = "https://nextgen-cyberlab.attackiq.com.au/v1/"  # trailing slash ok
 
 # Prefer environment (best for services/EXE), fallback to helper
-PRIVATE_TOKEN = os.environ.get("AiqToken") or get_token()
+
 GUID = get_machine_id()  # machine / asset identifier
 
 # Small HTTP client with timeouts & raise_for_status by default
@@ -32,6 +32,7 @@ DEFAULT_TIMEOUT = 30
 
 
 def _auth_headers() -> dict:
+    PRIVATE_TOKEN = os.environ.get("AiqToken") or get_token()
     return {
         "Authorization": f"Token {PRIVATE_TOKEN}",
         "Content-Type": "application/json",

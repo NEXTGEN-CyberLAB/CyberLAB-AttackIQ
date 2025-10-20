@@ -1,11 +1,13 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, flash
+from flask import Flask, request, jsonify, render_template, render_template_string, redirect, url_for, flash
 import platform
 import os
 import sys
 import json
+import time
+import threading
 
 from aiq_api import load_config, run_local
-from helper import get_machine_id, run_installer_windows, run_installer_linux
+from helper import get_machine_id, run_installer_windows, run_installer_linux,read_system_env_var
 from runtime_config import RES_DIR, CONFIG_PATH
 
 app = Flask(
@@ -84,6 +86,33 @@ def service_checks(agent_ok: bool):
 # ----------------------------
 # Routes
 # ----------------------------
+@app.route("/missing_token")
+def missing_token():
+    """Dedicated page shown when AIQ_TOKEN is missing."""
+    return render_template("missing_token.html"), 500
+
+
+@app.route("/reload_check")
+def reload_check():
+    """Manual refresh route so user can click 'Recheck Token'."""
+    token = read_system_env_var("AiqToken")
+    if token:
+        os.environ["AiqToken"] = token  # inject into process memory
+        print(os.environ["AiqToken"])
+        print("[CyberLAB] Reloaded AiqToken from system environment.")
+        return redirect(url_for("home_redirect"))
+    return redirect(url_for("missing_token"))
+
+
+@app.before_request
+def check_aiq_token():
+    if request.endpoint in ("static", "missing_token", "reload_check"):
+        return  # Skip self and static
+    if not os.environ.get("AiqToken"):
+        return redirect(url_for("missing_token"))
+
+
+
 @app.route("/")
 def home_redirect():
     # Send homepage to the Attacks launcher
@@ -160,6 +189,20 @@ def run_attack(attack_name):
     except Exception as e:
         return render_template("result.html", attack_name=attack_name, result=f"Error: {e}")
 
+
+
+@app.route("/exit", methods=["POST"])
+def exit_app():
+    """Gracefully stop the Flask app and exit the program (no jsonify)."""
+
+    def shutdown():
+        time.sleep(0.5)
+        os._exit(0)  # Force-exit the process cleanly
+
+    threading.Thread(target=shutdown).start()
+
+    # Return a simple HTML response
+    return render_template("exit.html")
 
 # ----------------------------
 # Entrypoint

@@ -2,7 +2,7 @@
   "attackiq": {
     "APT29 Attack Emulator": {
       "template_id": "c71bc2cf-6b54-4450-bcc7-6c9cd9830c72",
-      "assessment_id": "",
+      "assessment_id": "39e37fa3-a20f-4384-9593-d97f09102a59",
       "description": "Simulates APT29 tradecraft - credential dumping and stealthy lateral movement."
     },
     "Salt Typhoon - 2025-03 - SparrowDoor and ShadowPad Campaign": {

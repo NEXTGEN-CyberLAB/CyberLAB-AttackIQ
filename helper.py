@@ -70,3 +70,30 @@ def run_installer_linux(password):
         return "Linux installer ran successfully."
     except subprocess.CalledProcessError as e:
         return f"Linux installer error: {e}"
+
+
+def read_system_env_var(name: str):
+    """
+    Read a system environment variable (Windows only) safely.
+    Handles case-insensitive matches and strips extra PowerShell output.
+    """
+    try:
+        ps_cmd = (
+            f'$envs = Get-ItemProperty -Path "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"; '
+            f'($envs.PSObject.Properties | Where-Object {{ $_.Name -ieq "{name}" }} | Select-Object -ExpandProperty Value)'
+        )
+        si = subprocess.STARTUPINFO()
+        si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        si.wShowWindow = 0
+
+        value = subprocess.check_output(
+            ["powershell", "-NoProfile", "-Command", ps_cmd],
+            text=True, stderr=subprocess.DEVNULL,
+            startupinfo=si,
+            creationflags=subprocess.CREATE_NO_WINDOW,
+        ).strip()
+        if value:
+            return value
+        return None
+    except subprocess.CalledProcessError:
+        return None

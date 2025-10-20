@@ -150,3 +150,10 @@ th, td { padding: 10px 12px; text-align: left; }
 thead th { font-size: 12px; color: var(--muted); background: #0f1623; text-transform: uppercase; letter-spacing: .3px; }
 tbody tr { background: #0b111d; border-top: 1px solid var(--border); }
 tbody tr:nth-child(odd) { background: #0e1626; }
+
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;  /* was 12px, doubled for more space */
+}
